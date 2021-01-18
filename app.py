@@ -1,41 +1,35 @@
 from flask import Flask
 import os
 import socket
-import psycopg2
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    table_description = '''CREATE TABLE increment (Date_app DATE)'''
-    conn = psycopg2.connect(dbname='postgres', user='postgres', password='postgres', host='db')
+
+    import sqlite3
+    conn = sqlite3.connect('example.db')
     cursor = conn.cursor()
-    try: 
-    	cursor.execute(table_description)
+    try:
+        cursor.execute('''CREATE TABLE increment (d text)''')
     except Exception as e:
         print('DB already created')
-    conn.commit()
-    cursor.close()
-    conn.close()
-    html = "<h1>Hello!</h1>" \
-           "<b>Hostname: </b> {hostname}<br/>"
+
+    html = "<h3>Hello!</h3>" \
+           "<b>Hostname:</b> {hostname}<br/>"
     return html.format(name=os.getenv("NAME", "world"), hostname=socket.gethostname())
 
 
 @app.route("/plus")
 def plus():
-    
-    date = "10/01/2021"
-    conn = psycopg2.connect(dbname='postgres', user='postgres', password='postgres', host='db')
+    import sqlite3
+    conn = sqlite3.connect('example.db')
     cursor = conn.cursor()
-    add_date = "INSERT INTO increment(Date_app) VALUES ('2020-01-10')"
-    cursor.execute(add_date)
+    date = "21/9/2020"
+    cursor.execute('INSERT INTO increment VALUES ("21/9/2020")')
     conn.commit()
-    cursor.close()
-    conn.close()
     html = f"<h3>{date}</h3>"
     return html
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
