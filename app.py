@@ -18,7 +18,7 @@ def hello():
     cursor.close()
     conn.close()
     html = "<h1>Hello!</h1>" \
-           "<b>Hostname:</b> {hostname}<br/>"
+           "<b>Hostname: </b> {hostname}<br/>"
     return html.format(name=os.getenv("NAME", "world"), hostname=socket.gethostname())
 
 
